@@ -2,16 +2,16 @@ package com.boycottpro.models;
 
 public class Causes {
     private String cause_id;
-    private String name;
-    private String description;
+    private String category;
+    private String cause_desc;
     private int follower_count;
 
     public Causes() {}
 
-    public Causes(String cause_id, String name, String description, int follower_count) {
+    public Causes(String cause_id, String category, String cause_desc, int follower_count) {
         this.cause_id = cause_id;
-        this.name = name;
-        this.description = description;
+        this.category = category;
+        this.cause_desc = cause_desc;
         this.follower_count = follower_count;
     }
 // Getters and setters
@@ -24,20 +24,20 @@ public class Causes {
         this.cause_id = cause_id;
     }
 
-    public String getName() {
-        return name;
+    public String getCategory() {
+        return category;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCause_desc() {
+        return cause_desc;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setCause_desc(String cause_desc) {
+        this.cause_desc = cause_desc;
     }
 
     public int getFollower_count() {
