@@ -5,17 +5,17 @@ public class Users {
     private String email_addr;
     private String username;
     private String password_hash;
-    private String timestamp;
+    private String created_ts;
 
     public Users() {}
 
     public Users(String user_id, String email_addr, String username,
-                 String password_hash, String timestamp) {
+                 String password_hash, String created_ts) {
         this.user_id = user_id;
         this.email_addr = email_addr;
         this.username = username;
         this.password_hash = password_hash;
-        this.timestamp = timestamp;
+        this.created_ts = created_ts;
     }
 // Getters and setters
 
@@ -51,11 +51,11 @@ public class Users {
         this.password_hash = password_hash;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getCreated_ts() {
+        return created_ts;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setCreated_ts(String created_ts) {
+        this.created_ts = created_ts;
     }
 }
