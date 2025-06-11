@@ -5,12 +5,12 @@ public class Users {
     private String email_addr;
     private String username;
     private String password_hash;
-    private String created_ts;
+    private Integer created_ts;
 
     public Users() {}
 
     public Users(String user_id, String email_addr, String username,
-                 String password_hash, String created_ts) {
+                 String password_hash, Integer created_ts) {
         this.user_id = user_id;
         this.email_addr = email_addr;
         this.username = username;
@@ -51,11 +51,11 @@ public class Users {
         this.password_hash = password_hash;
     }
 
-    public String getCreated_ts() {
+    public Integer getCreated_ts() {
         return created_ts;
     }
 
-    public void setCreated_ts(String created_ts) {
+    public void setCreated_ts(Integer created_ts) {
         this.created_ts = created_ts;
     }
 }
