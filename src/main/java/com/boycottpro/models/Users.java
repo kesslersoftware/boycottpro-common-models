@@ -1,5 +1,9 @@
 package com.boycottpro.models;
 
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+
+@DynamoDbBean
 public class Users {
     private String user_id;
     private String email_addr;
@@ -18,7 +22,7 @@ public class Users {
         this.created_ts = created_ts;
     }
 // Getters and setters
-
+    @DynamoDbPartitionKey
     public String getUser_id() {
         return user_id;
     }

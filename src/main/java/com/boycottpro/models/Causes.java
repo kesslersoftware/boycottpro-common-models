@@ -1,5 +1,8 @@
 package com.boycottpro.models;
 
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
+
+@DynamoDbBean
 public class Causes {
     private String cause_id;
     private String category;
@@ -16,6 +19,7 @@ public class Causes {
     }
 // Getters and setters
 
+    @DynamoDbPartitionKey
     public String getCause_id() {
         return cause_id;
     }

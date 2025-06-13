@@ -1,7 +1,11 @@
 package com.boycottpro.models;
 
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+
 import java.io.Serializable;
 
+@DynamoDbBean
 public class Companies implements Serializable {
     private String company_id;
     private String company_name;
@@ -40,6 +44,7 @@ public class Companies implements Serializable {
         this.boycott_count = boycott_count;
     }
 
+    @DynamoDbPartitionKey
     public String getCompany_id() {
         return company_id;
     }
