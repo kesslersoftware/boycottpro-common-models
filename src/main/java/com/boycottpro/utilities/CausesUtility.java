@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class CausesUtility {
 
-    private static Causes mapToCauses(Map<String, AttributeValue> item) {
+    public static Causes mapToCauses(Map<String, AttributeValue> item) {
         Causes cause = new Causes();
         cause.setCause_id(item.get("cause_id").s());
         cause.setCategory(item.get("category").s());
