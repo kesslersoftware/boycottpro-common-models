@@ -1,6 +1,7 @@
 package com.boycottpro.utilities;
 
 import com.boycottpro.models.Companies;
+import com.boycottpro.models.CompanySubset;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
@@ -25,4 +26,13 @@ public class CompanyUtility {
         company.setBoycott_count(Integer.parseInt(item.getOrDefault("boycott_count", AttributeValue.fromN("0")).n()));
         return company;
     }
+    public static CompanySubset mapToSubset(Map<String, AttributeValue> item) {
+        CompanySubset company =  new CompanySubset();
+        company.setCompany_id(item.get("company_id").s());
+        company.setCompany_name(item.get("company_name").s());
+        company.setBoycott_count(Integer.parseInt(item.getOrDefault("boycott_count",
+                AttributeValue.fromN("0")).n()));
+        return company;
+    }
+
 }
