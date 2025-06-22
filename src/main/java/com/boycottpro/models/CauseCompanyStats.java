@@ -11,6 +11,18 @@ public class CauseCompanyStats {
     private String company_name;
     private int boycott_count;
 
+    public CauseCompanyStats() {
+    }
+
+    public CauseCompanyStats(String cause_id, String cause_desc, String company_id,
+                             String company_name, int boycott_count) {
+        this.cause_id = cause_id;
+        this.cause_desc = cause_desc;
+        this.company_id = company_id;
+        this.company_name = company_name;
+        this.boycott_count = boycott_count;
+    }
+
     @DynamoDbPartitionKey
     public String getCause_id() { return cause_id; }
     public void setCause_id(String cause_id) { this.cause_id = cause_id; }
