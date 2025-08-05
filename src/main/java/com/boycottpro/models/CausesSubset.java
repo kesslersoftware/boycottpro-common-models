@@ -1,6 +1,8 @@
 package com.boycottpro.models;
 
 public class CausesSubset {
+
+    private int rank;
     private String cause_id;
     private String cause_desc;
     private int follower_count;
@@ -8,10 +10,19 @@ public class CausesSubset {
     public CausesSubset() {
     }
 
-    public CausesSubset(String cause_id, String cause_desc, int follower_count) {
+    public CausesSubset(int rank, String cause_id, String cause_desc, int follower_count) {
+        this.rank = rank;
         this.cause_id = cause_id;
         this.cause_desc = cause_desc;
         this.follower_count = follower_count;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public String getCause_id() {

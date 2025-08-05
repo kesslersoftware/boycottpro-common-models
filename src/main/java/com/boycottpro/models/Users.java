@@ -10,18 +10,21 @@ public class Users {
     private String username;
     private String password_hash;
     private Long created_ts;
+    private boolean paying_user;
 
     public Users() {}
 
     public Users(String user_id, String email_addr, String username,
-                 String password_hash, Long created_ts) {
+                 String password_hash, Long created_ts, boolean paying_user) {
         this.user_id = user_id;
         this.email_addr = email_addr;
         this.username = username;
         this.password_hash = password_hash;
         this.created_ts = created_ts;
+        this.paying_user = paying_user;
     }
-// Getters and setters
+
+    // Getters and setters
     @DynamoDbPartitionKey
     public String getUser_id() {
         return user_id;
@@ -61,5 +64,13 @@ public class Users {
 
     public void setCreated_ts(Long created_ts) {
         this.created_ts = created_ts;
+    }
+
+    public boolean isPaying_user() {
+        return paying_user;
+    }
+
+    public void setPaying_user(boolean paying_user) {
+        this.paying_user = paying_user;
     }
 }

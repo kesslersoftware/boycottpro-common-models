@@ -14,6 +14,21 @@ public class UserBoycotts {
     private String personal_reason;
     private String timestamp;
 
+    public UserBoycotts() {
+    }
+
+    public UserBoycotts(String user_id, String company_id, String company_name, String cause_id, String cause_desc,
+                        String company_cause_id, String personal_reason, String timestamp) {
+        this.user_id = user_id;
+        this.company_id = company_id;
+        this.company_name = company_name;
+        this.cause_id = cause_id;
+        this.cause_desc = cause_desc;
+        this.company_cause_id = company_cause_id;
+        this.personal_reason = personal_reason;
+        this.timestamp = timestamp;
+    }
+
     @DynamoDbPartitionKey
     public String getUser_id() { return user_id; }
     public void setUser_id(String user_id) { this.user_id = user_id; }
