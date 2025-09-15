@@ -5,8 +5,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven-3.9'
-        jdk 'OpenJDK-21'
+        maven 'Maven'
+        jdk 'JDK-21'
     }
 
     parameters {
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Test') {
             when {
-                not { params.SKIP_TESTS }
+                not { params.SKIP_TESTS == true }
             }
             steps {
                 script {
@@ -84,7 +84,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             when {
-                not { params.SKIP_TESTS }
+                not { params.SKIP_TESTS == true }
             }
             steps {
                 script {
@@ -108,7 +108,7 @@ pipeline {
 
         stage('Quality Gate (Informational Only)') {
             when {
-                not { params.SKIP_TESTS }
+                not { params.SKIP_TESTS == true }
             }
             steps {
                 script {
