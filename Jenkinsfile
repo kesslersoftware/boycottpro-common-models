@@ -41,7 +41,7 @@ pipeline {
 
         stage('Test') {
             when {
-                not { params.SKIP_TESTS == true }
+                expression { !params.SKIP_TESTS }
             }
             steps {
                 script {
@@ -84,7 +84,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             when {
-                not { params.SKIP_TESTS == true }
+                expression { !params.SKIP_TESTS }
             }
             steps {
                 script {
@@ -108,7 +108,7 @@ pipeline {
 
         stage('Quality Gate (Informational Only)') {
             when {
-                not { params.SKIP_TESTS == true }
+                expression { !params.SKIP_TESTS }
             }
             steps {
                 script {
