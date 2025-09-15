@@ -46,7 +46,11 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'mvn clean test jacoco:report'
+                        sh '''
+                            export JAVA_HOME="${TOOL_JDK_21}"
+                            export PATH="$JAVA_HOME/bin:$PATH"
+                            mvn clean test jacoco:report
+                        '''
                         echo "✅ Tests and coverage completed successfully"
                     } catch (Exception e) {
                         echo "⚠️ Tests failed but continuing build: ${e.getMessage()}"
@@ -91,6 +95,8 @@ pipeline {
                     try {
                         withSonarQubeEnv('Local-SonarQube') {
                             sh '''
+                                export JAVA_HOME="${TOOL_JDK_21}"
+                                export PATH="$JAVA_HOME/bin:$PATH"
                                 mvn sonar:sonar \
                                     -Dsonar.projectKey=${LIBRARY_NAME} \
                                     -Dsonar.projectName="${LIBRARY_NAME}" \
@@ -134,6 +140,10 @@ pipeline {
         stage('Build Library') {
             steps {
                 sh '''
+                    # Set JAVA_HOME from Jenkins tool
+                    export JAVA_HOME="${TOOL_JDK_21}"
+                    export PATH="$JAVA_HOME/bin:$PATH"
+
                     # Build the library JAR
                     mvn clean package -DskipTests
 
@@ -165,6 +175,10 @@ pipeline {
         stage('Install to Local Maven') {
             steps {
                 sh '''
+                    # Set JAVA_HOME from Jenkins tool
+                    export JAVA_HOME="${TOOL_JDK_21}"
+                    export PATH="$JAVA_HOME/bin:$PATH"
+
                     # Install to local Maven repository for other projects to use
                     mvn install -DskipTests
 
@@ -180,6 +194,10 @@ pipeline {
             }
             steps {
                 sh '''
+                    # Set JAVA_HOME from Jenkins tool
+                    export JAVA_HOME="${TOOL_JDK_21}"
+                    export PATH="$JAVA_HOME/bin:$PATH"
+
                     # Deploy to local Nexus repository
                     mvn deploy -DskipTests -DaltDeploymentRepository=nexus::default::http://localhost:8096/repository/maven-releases/
 
@@ -191,6 +209,10 @@ pipeline {
         stage('Generate Documentation') {
             steps {
                 sh '''
+                    # Set JAVA_HOME from Jenkins tool
+                    export JAVA_HOME="${TOOL_JDK_21}"
+                    export PATH="$JAVA_HOME/bin:$PATH"
+
                     # Generate javadoc
                     mvn javadoc:javadoc
 
