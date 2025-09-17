@@ -3,12 +3,12 @@
 
 pipeline {
     agent any
-    
+
     tools {
         maven 'Maven'
         jdk 'JDK-21'
     }
-    
+
     parameters {
         booleanParam(
             name: 'SKIP_TESTS',
@@ -21,11 +21,11 @@ pipeline {
             description: 'Publish to local Nexus repository'
         )
     }
-    
+
     environment {
         LIBRARY_NAME = "${env.JOB_NAME.replace('-pipeline', '')}"
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
@@ -59,7 +59,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Test') {
             when {
                 expression { !params.SKIP_TESTS }
@@ -88,7 +88,7 @@ pipeline {
                         } catch (Exception e) {
                             echo "⚠️ Failed to publish test results: ${e.getMessage()}"
                         }
-                        
+
                         try {
                             publishHTML([
                                 allowMissing: true,
@@ -106,7 +106,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('SonarQube Analysis') {
             when {
                 expression { !params.SKIP_TESTS }
@@ -132,7 +132,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Quality Gate (Informational Only)') {
             when {
                 expression { !params.SKIP_TESTS }
@@ -157,7 +157,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Build Library') {
             steps {
                 sh '''
@@ -167,7 +167,7 @@ pipeline {
 
                     # Build the library JAR
                     mvn clean package -DskipTests
-                    
+
                     # Verify the JAR was created
                     if [ ! -f target/*.jar ]; then
                         echo "ERROR: Library JAR not found!"
@@ -190,11 +190,11 @@ pipeline {
 
                     echo "✅ Library packaged with semantic version: ${SEMANTIC_VERSION}"
                 '''
-                
+
                 archiveArtifacts artifacts: 'library-artifacts/*.jar', fingerprint: true
             }
         }
-        
+
         stage('Install to Local Maven') {
             steps {
                 sh '''
@@ -204,13 +204,13 @@ pipeline {
 
                     # Install to local Maven repository for other projects to use
                     mvn install -DskipTests
-                    
+
                     echo "✅ Library installed to local Maven repository"
                     echo "Other projects can now use this dependency"
                 '''
             }
         }
-        
+
         stage('Publish to Nexus') {
             when {
                 expression { params.PUBLISH_TO_NEXUS }
@@ -321,7 +321,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Generate Documentation') {
             steps {
                 sh '''
@@ -358,7 +358,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always {
             cleanWs()
