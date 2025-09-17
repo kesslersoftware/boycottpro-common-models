@@ -294,7 +294,7 @@ pipeline {
                             -Dpackaging=jar \
                             -Dclassifier=sources \
                             -DrepositoryId=nexus-all \
-                            -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${ENV}/ \
+                            -Durl=http://host.docker.internal:8096/repository/lambda-artifacts-${ENV}/ \
                             -s custom-settings.xml
 
                         # LATEST sources
@@ -306,7 +306,7 @@ pipeline {
                             -Dpackaging=jar \
                             -Dclassifier=sources \
                             -DrepositoryId=nexus-all \
-                            -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${ENV}/ \
+                            -Durl=http://host.docker.internal:8096/repository/lambda-artifacts-${ENV}/ \
                             -s custom-settings.xml
 
                         echo "✅ Published sources JARs"
