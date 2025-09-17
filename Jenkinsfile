@@ -11,7 +11,7 @@ pipeline {
 
     parameters {
         choice(
-            name: 'ENVIRONMENT',
+            name: 'ENV',
             choices: ['dev', 'qa', 'ps', 'prod'],
             description: 'Target environment for library deployment'
         )
@@ -24,7 +24,8 @@ pipeline {
 
     environment {
         LIBRARY_NAME = "${env.JOB_NAME.replace('-pipeline', '')}"
-        ENV = "${ENV}"
+        ENV = "${params.ENV}"
+
     }
 
     stages {
