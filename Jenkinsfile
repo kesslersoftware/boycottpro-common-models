@@ -10,15 +10,15 @@ pipeline {
     }
 
     parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'qa', 'ps', 'prod'],
+            description: 'Target environment for library deployment'
+        )
         booleanParam(
             name: 'SKIP_TESTS',
             defaultValue: false,
             description: 'Skip unit tests (emergency builds only)'
-        )
-        booleanParam(
-            name: 'PUBLISH_TO_NEXUS',
-            defaultValue: false,
-            description: 'Publish to local Nexus repository'
         )
     }
 
@@ -212,9 +212,6 @@ pipeline {
         }
 
         stage('Publish to Nexus') {
-            when {
-                expression { params.PUBLISH_TO_NEXUS }
-            }
             steps {
                 script {
                     // Create custom Maven settings for Nexus deployment
@@ -296,7 +293,7 @@ pipeline {
                             -Dpackaging=jar \
                             -Dclassifier=sources \
                             -DrepositoryId=nexus-all \
-                            -Durl=http://host.docker.internal:8096/repository/maven-public/ \
+                            -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${params.ENVIRONMENT}/ \
                             -s custom-settings.xml
 
                         # LATEST sources
@@ -308,7 +305,7 @@ pipeline {
                             -Dpackaging=jar \
                             -Dclassifier=sources \
                             -DrepositoryId=nexus-all \
-                            -Durl=http://host.docker.internal:8096/repository/maven-public/ \
+                            -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${params.ENVIRONMENT}/ \
                             -s custom-settings.xml
 
                         echo "✅ Published sources JARs"
@@ -317,7 +314,7 @@ pipeline {
                     echo "🎯 Dual versioning strategy complete:"
                     echo "   Semantic: ${LIBRARY_NAME}:${SEMANTIC_VERSION}"
                     echo "   Alias: ${LIBRARY_NAME}:LATEST"
-                    echo "🔗 View at: http://host.docker.internal:8096/#browse/browse:maven-public"
+                    echo "🔗 View at: http://host.docker.internal:8096/#browse/browse:maven-artifacts-${params.ENVIRONMENT}"
                 '''
             }
         }
@@ -367,14 +364,11 @@ pipeline {
             echo "✅ Library build successful!"
             echo "📦 JAR: ${LIBRARY_NAME}-${env.SEMANTIC_VERSION}.jar"
             echo "🏠 Installed to local Maven repository"
-            script {
-                if (params.PUBLISH_TO_NEXUS) {
-                    echo "🚀 Published to Nexus repository with dual versioning:"
-                    echo "   Semantic: ${LIBRARY_NAME}:${env.SEMANTIC_VERSION}"
-                    echo "   Alias: ${LIBRARY_NAME}:LATEST"
-                    echo "🔗 http://host.docker.internal:8096/#browse/browse:maven-public"
-                }
-            }
+            echo "🚀 Published to Nexus repository with dual versioning:"
+            echo "   Environment: ${params.ENVIRONMENT}"
+            echo "   Semantic: ${LIBRARY_NAME}:${env.SEMANTIC_VERSION}"
+            echo "   Alias: ${LIBRARY_NAME}:LATEST"
+            echo "🔗 http://host.docker.internal:8096/#browse/browse:maven-artifacts-${params.ENVIRONMENT}"
         }
         failure {
             emailext (
