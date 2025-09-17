@@ -263,7 +263,7 @@ pipeline {
                         -Dversion=${SEMANTIC_VERSION} \
                         -Dpackaging=jar \
                         -DrepositoryId=nexus-all \
-                        -Durl=http://host.docker.internal:8096/repository/maven-releases/ \
+                        -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${params.ENVIRONMENT}/ \
                         -s custom-settings.xml
 
                     echo "✅ Published ${LIBRARY_NAME}:${SEMANTIC_VERSION} to Nexus"
@@ -276,7 +276,7 @@ pipeline {
                         -Dversion=LATEST \
                         -Dpackaging=jar \
                         -DrepositoryId=nexus-all \
-                        -Durl=http://host.docker.internal:8096/repository/maven-releases/ \
+                        -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${params.ENVIRONMENT}/ \
                         -s custom-settings.xml
 
                     echo "✅ Published ${LIBRARY_NAME}:LATEST alias to Nexus"
