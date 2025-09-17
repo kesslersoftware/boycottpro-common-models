@@ -265,7 +265,7 @@ pipeline {
                         -Dversion=${SEMANTIC_VERSION} \
                         -Dpackaging=jar \
                         -DrepositoryId=nexus-all \
-                        -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${ENV}/ \
+                        -Durl=http://host.docker.internal:8096/repository/lambda-artifacts-${ENV}/ \
                         -s custom-settings.xml
 
                     echo "✅ Published ${LIBRARY_NAME}:${SEMANTIC_VERSION} to Nexus"
@@ -278,7 +278,7 @@ pipeline {
                         -Dversion=LATEST \
                         -Dpackaging=jar \
                         -DrepositoryId=nexus-all \
-                        -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${ENV}/ \
+                        -Durl=http://host.docker.internal:8096/repository/lambda-artifacts-${ENV}/ \
                         -s custom-settings.xml
 
                     echo "✅ Published ${LIBRARY_NAME}:LATEST alias to Nexus"
@@ -316,7 +316,7 @@ pipeline {
                     echo "🎯 Dual versioning strategy complete:"
                     echo "   Semantic: ${LIBRARY_NAME}:${SEMANTIC_VERSION}"
                     echo "   Alias: ${LIBRARY_NAME}:LATEST"
-                    echo "🔗 View at: http://host.docker.internal:8096/#browse/browse:maven-artifacts-${ENV}"
+                    echo "🔗 View at: http://host.docker.internal:8096/#browse/browse:lambda-artifacts-${ENV}"
                 '''
             }
         }
@@ -370,7 +370,7 @@ pipeline {
             echo "   Environment: ${ENV}"
             echo "   Semantic: ${LIBRARY_NAME}:${env.SEMANTIC_VERSION}"
             echo "   Alias: ${LIBRARY_NAME}:LATEST"
-            echo "🔗 http://host.docker.internal:8096/#browse/browse:maven-artifacts-${ENV}"
+            echo "🔗 http://host.docker.internal:8096/#browse/browse:lambda-artifacts-${ENV}"
         }
         failure {
             emailext (
