@@ -24,6 +24,7 @@ pipeline {
 
     environment {
         LIBRARY_NAME = "${env.JOB_NAME.replace('-pipeline', '')}"
+        ENV = "${ENV}"
     }
 
     stages {
@@ -263,7 +264,7 @@ pipeline {
                         -Dversion=${SEMANTIC_VERSION} \
                         -Dpackaging=jar \
                         -DrepositoryId=nexus-all \
-                        -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${params.ENVIRONMENT}/ \
+                        -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${ENV}/ \
                         -s custom-settings.xml
 
                     echo "✅ Published ${LIBRARY_NAME}:${SEMANTIC_VERSION} to Nexus"
@@ -276,7 +277,7 @@ pipeline {
                         -Dversion=LATEST \
                         -Dpackaging=jar \
                         -DrepositoryId=nexus-all \
-                        -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${params.ENVIRONMENT}/ \
+                        -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${ENV}/ \
                         -s custom-settings.xml
 
                     echo "✅ Published ${LIBRARY_NAME}:LATEST alias to Nexus"
@@ -293,7 +294,7 @@ pipeline {
                             -Dpackaging=jar \
                             -Dclassifier=sources \
                             -DrepositoryId=nexus-all \
-                            -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${params.ENVIRONMENT}/ \
+                            -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${ENV}/ \
                             -s custom-settings.xml
 
                         # LATEST sources
@@ -305,7 +306,7 @@ pipeline {
                             -Dpackaging=jar \
                             -Dclassifier=sources \
                             -DrepositoryId=nexus-all \
-                            -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${params.ENVIRONMENT}/ \
+                            -Durl=http://host.docker.internal:8096/repository/maven-artifacts-${ENV}/ \
                             -s custom-settings.xml
 
                         echo "✅ Published sources JARs"
@@ -314,7 +315,7 @@ pipeline {
                     echo "🎯 Dual versioning strategy complete:"
                     echo "   Semantic: ${LIBRARY_NAME}:${SEMANTIC_VERSION}"
                     echo "   Alias: ${LIBRARY_NAME}:LATEST"
-                    echo "🔗 View at: http://host.docker.internal:8096/#browse/browse:maven-artifacts-${params.ENVIRONMENT}"
+                    echo "🔗 View at: http://host.docker.internal:8096/#browse/browse:maven-artifacts-${ENV}"
                 '''
             }
         }
@@ -365,10 +366,10 @@ pipeline {
             echo "📦 JAR: ${LIBRARY_NAME}-${env.SEMANTIC_VERSION}.jar"
             echo "🏠 Installed to local Maven repository"
             echo "🚀 Published to Nexus repository with dual versioning:"
-            echo "   Environment: ${params.ENVIRONMENT}"
+            echo "   Environment: ${ENV}"
             echo "   Semantic: ${LIBRARY_NAME}:${env.SEMANTIC_VERSION}"
             echo "   Alias: ${LIBRARY_NAME}:LATEST"
-            echo "🔗 http://host.docker.internal:8096/#browse/browse:maven-artifacts-${params.ENVIRONMENT}"
+            echo "🔗 http://host.docker.internal:8096/#browse/browse:maven-artifacts-${ENV}"
         }
         failure {
             emailext (
