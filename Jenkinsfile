@@ -259,16 +259,17 @@ pipeline {
 
                     # 1. Publish with semantic version (e.g., 1.2.3)
                     mvn deploy:deploy-file \
-                        -Dfile="$MAIN_JAR" \
-                        -DgroupId=com.boycottpro \
-                        -DartifactId=${LIBRARY_NAME} \
-                        -Dversion=${SEMANTIC_VERSION} \
-                        -Dpackaging=jar \
-                        -DrepositoryId=nexus-all \
-                        -Durl=http://host.docker.internal:8096/repository/lambda-artifacts-${ENV}/ \
-                        -s custom-settings.xml
+                          -Dfile="$MAIN_JAR" \
+                          -DgroupId=com.boycottpro \
+                          -DartifactId=${LIBRARY_NAME} \
+                          -Dversion=LATEST-${ENV} \
+                          -Dpackaging=jar \
+                          -DrepositoryId=nexus-all \
+                          -Durl=http://host.docker.internal:8096/repository/maven-releases/ \
+                          -s custom-settings.xml
 
-                    echo "✅ Published ${LIBRARY_NAME}:${SEMANTIC_VERSION} to Nexus"
+                      echo "✅ Published ${LIBRARY_NAME}:LATEST-${ENV} alias to Nexus"
+
 
                     # 2. Publish with LATEST alias (overwrite previous LATEST)
                     mvn deploy:deploy-file \
