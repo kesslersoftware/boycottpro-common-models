@@ -3,12 +3,12 @@
 
 pipeline {
     agent any
-
+    
     tools {
         maven 'Maven'
         jdk 'JDK-21'
     }
-
+    
     parameters {
         choice(
             name: 'ENV',
@@ -25,9 +25,8 @@ pipeline {
     environment {
         LIBRARY_NAME = "${env.JOB_NAME.replace('-pipeline', '')}"
         ENV = "${params.ENV}"
-
     }
-
+    
     stages {
         stage('Checkout') {
             steps {
@@ -61,7 +60,7 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Test') {
             when {
                 expression { !params.SKIP_TESTS }
@@ -90,7 +89,7 @@ pipeline {
                         } catch (Exception e) {
                             echo "⚠️ Failed to publish test results: ${e.getMessage()}"
                         }
-
+                        
                         try {
                             publishHTML([
                                 allowMissing: true,
@@ -108,7 +107,7 @@ pipeline {
                 }
             }
         }
-
+        
         stage('SonarQube Analysis') {
             when {
                 expression { !params.SKIP_TESTS }
@@ -134,7 +133,7 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Quality Gate (Informational Only)') {
             when {
                 expression { !params.SKIP_TESTS }
@@ -159,7 +158,7 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Build Library') {
             steps {
                 sh '''
@@ -169,7 +168,7 @@ pipeline {
 
                     # Build the library JAR
                     mvn clean package -DskipTests
-
+                    
                     # Verify the JAR was created
                     if [ ! -f target/*.jar ]; then
                         echo "ERROR: Library JAR not found!"
@@ -192,11 +191,11 @@ pipeline {
 
                     echo "✅ Library packaged with semantic version: ${SEMANTIC_VERSION}"
                 '''
-
+                
                 archiveArtifacts artifacts: 'library-artifacts/*.jar', fingerprint: true
             }
         }
-
+        
         stage('Install to Local Maven') {
             steps {
                 sh '''
@@ -206,13 +205,13 @@ pipeline {
 
                     # Install to local Maven repository for other projects to use
                     mvn install -DskipTests
-
+                    
                     echo "✅ Library installed to local Maven repository"
                     echo "Other projects can now use this dependency"
                 '''
             }
         }
-
+        
         stage('Publish to Nexus') {
             steps {
                 script {
@@ -257,21 +256,20 @@ pipeline {
 
                     echo "Publishing $MAIN_JAR with semantic version: ${SEMANTIC_VERSION}"
 
-                    # 1. Publish with semantic version (e.g., 1.2.3)
+                    # 1. Publish with semantic version to lambda-artifacts-{ENV}
                     mvn deploy:deploy-file \
-                          -Dfile="$MAIN_JAR" \
-                          -DgroupId=com.boycottpro \
-                          -DartifactId=${LIBRARY_NAME} \
-                          -Dversion=LATEST-${ENV} \
-                          -Dpackaging=jar \
-                          -DrepositoryId=nexus-all \
-                          -Durl=http://host.docker.internal:8096/repository/maven-releases/ \
-                          -s custom-settings.xml
+                        -Dfile="$MAIN_JAR" \
+                        -DgroupId=com.boycottpro \
+                        -DartifactId=${LIBRARY_NAME} \
+                        -Dversion=${SEMANTIC_VERSION} \
+                        -Dpackaging=jar \
+                        -DrepositoryId=nexus-all \
+                        -Durl=http://host.docker.internal:8096/repository/lambda-artifacts-${ENV}/ \
+                        -s custom-settings.xml
 
-                      echo "✅ Published ${LIBRARY_NAME}:LATEST-${ENV} alias to Nexus"
+                    echo "✅ Published ${LIBRARY_NAME}:${SEMANTIC_VERSION} to lambda-artifacts-${ENV}"
 
-
-                    # 2. Publish with LATEST alias (overwrite previous LATEST)
+                    # 2. Publish with LATEST alias to lambda-artifacts-{ENV}
                     mvn deploy:deploy-file \
                         -Dfile="$MAIN_JAR" \
                         -DgroupId=com.boycottpro \
@@ -282,7 +280,7 @@ pipeline {
                         -Durl=http://host.docker.internal:8096/repository/lambda-artifacts-${ENV}/ \
                         -s custom-settings.xml
 
-                    echo "✅ Published ${LIBRARY_NAME}:LATEST alias to Nexus"
+                    echo "✅ Published ${LIBRARY_NAME}:LATEST to lambda-artifacts-${ENV}"
 
                     # Publish sources JAR if available
                     SOURCES_JAR=$(find target -name "*sources*.jar" | head -1)
@@ -317,11 +315,11 @@ pipeline {
                     echo "🎯 Dual versioning strategy complete:"
                     echo "   Semantic: ${LIBRARY_NAME}:${SEMANTIC_VERSION}"
                     echo "   Alias: ${LIBRARY_NAME}:LATEST"
-                    echo "🔗 View at: http://host.docker.internal:8096/#browse/browse:lambda-artifacts-${ENV}"
+                    echo "🔗 View at: http://host.docker.internal:8096/#browse/browse:maven-artifacts-${params.ENVIRONMENT}"
                 '''
             }
         }
-
+        
         stage('Generate Documentation') {
             steps {
                 sh '''
@@ -358,7 +356,7 @@ pipeline {
             }
         }
     }
-
+    
     post {
         always {
             cleanWs()
@@ -368,10 +366,10 @@ pipeline {
             echo "📦 JAR: ${LIBRARY_NAME}-${env.SEMANTIC_VERSION}.jar"
             echo "🏠 Installed to local Maven repository"
             echo "🚀 Published to Nexus repository with dual versioning:"
-            echo "   Environment: ${ENV}"
+            echo "   Environment: ${params.ENVIRONMENT}"
             echo "   Semantic: ${LIBRARY_NAME}:${env.SEMANTIC_VERSION}"
             echo "   Alias: ${LIBRARY_NAME}:LATEST"
-            echo "🔗 http://host.docker.internal:8096/#browse/browse:lambda-artifacts-${ENV}"
+            echo "🔗 http://host.docker.internal:8096/#browse/browse:maven-artifacts-${params.ENVIRONMENT}"
         }
         failure {
             emailext (
