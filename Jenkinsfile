@@ -375,7 +375,7 @@ pipeline {
             emailext (
                 subject: "FAILED: Library Build - ${LIBRARY_NAME}",
                 body: "Shared library build failed for ${LIBRARY_NAME}. Check Jenkins for details.",
-                to: "dylan@kesslersoftware.com"
+                to: "contact+jenkins@kesslersoftware.com"
             )
         }
     }
